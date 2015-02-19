@@ -4,14 +4,12 @@
 extern crate regex_macros;
 extern crate regex;
 
-//use regex;
-//use regex_macros;
-
 use std::io;
 use std::collections::HashMap;
 
 
 #[cfg(not(test))]
+/// * TODO: Separate library functionality into separate crate from executable
 /// * consume training file on commandline
 /// * read _one_ word per line from STDIN
 /// * ``for each'' word from STDIN
@@ -21,6 +19,17 @@ use std::collections::HashMap;
 ///         * ``-'' if there aren't any improvements
 fn main() {
     println!("Hello, world!");
+    // open up training file given on command line
+    //  - error out if no file given
+    // 
+    // for each line in STDIN:
+    //  - read ONE word from line
+    //  - print a line consisting of one of: (e.g. ``println!("{}", spell_check(word));'')
+    //      * just the word if correctly spelled
+    //      * the word and the best improvement
+    //      * ``-'' if there aren't any improvements
+
+
     //let text: String = try!(buff.read_to_string());
 }
 
@@ -83,14 +92,19 @@ mod word_indicies_tests {
 
 
 /// training module
-/// * consumes a corpus of correctly spelled words
-/// * counts number of occurrences of these words
-fn train() {
+/// * computes frequencies of correctly spelled words in given corpus
+/// TODO: Make an actual submodule, i.e. accessible via ``spelling_corrector::training'' with
+/// code available in ``src/training.rs'' or ``src/training/mod.rs''
+// won't necessarily take a String, may take BufferedReader or maybe &String, or...
+fn train(corpus: String) -> HashMap<String, usize> {
     println!("I'm training!");
 }
 
 /// spell check module
+/// * TODO: Make actual submodule, i.e. accessible via ``spelling_corrector::spell_check'' with
+/// code available in ``src/spell_check.rs'' or ``src/spell_check/mod.rs''
 /// * uses resulting frequencies from training to check individual words
+///     - ex: ``check(word, known_words)''
 /// * checks whether or not given word spelled correctly according to training module
 ///     - if not, checks whether ``small edits'' create a correctly spelled variant
 ///         * ``small edits'' means application of _one_ edit action __possibly__ followed by the
@@ -99,6 +113,8 @@ fn train() {
 ///     - if none of candidates correct word, failure reported
 
 /// edit actions module
+/// * TODO: Make actual submodule, i.e. accessible via ``spelling_corrector::edit_actions'' with
+/// code available in ``src/edit_actions.rs'' or ``src/edit_actions/mod.rs''
 /// * given a word, an edit action is one of the following
 ///     - deletion of _one_ letter
 ///     - transposition of _two_ neighboring letters
