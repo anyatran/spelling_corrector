@@ -2,4 +2,8 @@
 
 name = "spelling_corrector"
 version = "0.0.1"
-authors = ["Anya Tran <panhtran249@gmail.com>"]
+authors = ["Anya Tran <panhtran249@gmail.com>", "Isaac Boehman <idboehman@gmail.com>"]
+
+[dependencies]
+regex = "0.1.10"
+regex_macros = "0.1.6"
