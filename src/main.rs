@@ -176,11 +176,11 @@ mod train_tests {
     }
 }*/
 
-fn splits(word: String) -> Vec<(String, String)> {
+fn splits(word: &str) -> Vec<(String, String)> {
     let mut splits: Vec<(String, String)> = vec![];
     for i in range(0, word.len()+1) {
-        let word_split: (String, String) = (word.as_slice().slice_to(i).to_string(),
-                                            word.as_slice().slice_from(i).to_string());
+        let word_split: (String, String) = (word.slice_to(i).to_string(),
+                                            word.slice_from(i).to_string());
         splits.push(word_split)
     }
     splits
@@ -213,7 +213,7 @@ mod splits_tests {
     }
 
     fn splits_expect(s: &str, e: Vec<(String, String)>) {
-        assert_eq!(splits(s.to_string()), e);
+        assert_eq!(splits(s), e);
     }
 
 }
