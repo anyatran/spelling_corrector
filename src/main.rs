@@ -220,11 +220,12 @@ mod splits_tests {
 
 }
 
-fn deletes(word: String, splits: Vec<(String, String)>) -> Vec<String> {
+fn deletes(word: String, splits: &Vec<(String, String)>) -> Vec<String> {
     let mut deletes: Vec<String> = vec![];
-    for (a, b) in splits.into_iter() {
+    for &(ref a, ref b) in splits.iter() {
         if !b.is_empty() {
-            let deleted: String = (a + b.as_slice().slice_from(1)).to_string();
+            let b_minus_first_char: &str = b.as_slice().slice_from(1);
+            let deleted: String = a.to_string() + b_minus_first_char;
             deletes.push(deleted)
         }
     }
@@ -256,7 +257,8 @@ mod deletes_tests {
     }
 
     fn deletes_expect(s: &str, e: Vec<String>) {
-        assert_eq!(deletes(s.to_string(),splits(s.to_string())), e);
+        let boxed_splits = Box::new(splits(s.to_string()));
+        assert_eq!(deletes(s.to_string(),&*boxed_splits), e);
     }
 }
 
