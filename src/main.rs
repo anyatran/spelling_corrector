@@ -218,7 +218,7 @@ mod splits_tests {
 
 }
 
-fn deletes(word: String, splits: &Vec<(String, String)>) -> Vec<String> {
+fn deletes(splits: &Vec<(String, String)>) -> Vec<String> {
     let mut deletes: Vec<String> = vec![];
     for &(ref a, ref b) in splits.iter() {
         if !b.is_empty() {
@@ -255,11 +255,11 @@ mod deletes_tests {
 
     fn deletes_expect(s: &str, e: Vec<String>) {
         let boxed_splits = Box::new(splits(s));
-        assert_eq!(deletes(s.to_string(),&*boxed_splits), e);
+        assert_eq!(deletes(&*boxed_splits), e);
     }
 }
 
-fn transposes(word: String, splits: &Vec<(String, String)>) -> Vec<String> {
+fn transposes(splits: &Vec<(String, String)>) -> Vec<String> {
     let mut transposes: Vec<String> = vec![];
     for &(ref a, ref b) in splits.iter() {
         if b.len() > 1 {
@@ -298,12 +298,12 @@ mod transposes_tests {
 
     fn transposes_expect(s: &str, e: Vec<String>) {
         let boxed_splits: Box<Vec<(String, String)>> = Box::new(splits(s));
-        assert_eq!(transposes(s.to_string(),&*boxed_splits), e);
+        assert_eq!(transposes(&*boxed_splits), e);
     }
 
 }
 
-fn replaces(word: String, splits: &Vec<(String, String)>) -> Vec<String> {
+fn replaces(splits: &Vec<(String, String)>) -> Vec<String> {
     let mut replaces: Vec<String> = vec![];
     let alphabet: [&str; 26] = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p",
                                 "q","r","s","t","u","v","w","x","y","z"];
@@ -345,17 +345,17 @@ mod replaces_tests {
     #[test]
     fn replaces_characters_in_word() {
         let boxed_splits: Box<Vec<(String, String)>> = Box::new(splits("hi"));
-        let replaced = replaces("hi".to_string(), &*boxed_splits);
+        let replaced = replaces(&*boxed_splits);
         assert_eq!(replaced.len(), 52);
     }
 
     fn replaces_expect(s: &str, e: Vec<String>) {
         let boxed_splits: Box<Vec<(String, String)>> = Box::new(splits(s));
-        assert_eq!(replaces(s.to_string(),&*boxed_splits), e);
+        assert_eq!(replaces(&*boxed_splits), e);
     }
 }
 
-fn inserts(word: String, splits: &Vec<(String, String)>) -> Vec<String> {
+fn inserts(splits: &Vec<(String, String)>) -> Vec<String> {
     let mut inserts: Vec<String> = vec![];
     let alphabet: [&str; 26] = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p",
                                 "q","r","s","t","u","v","w","x","y","z"];
@@ -389,13 +389,13 @@ mod inserts_tests {
     #[test]
     fn inserts_chars_in_word() {
         let boxed_splits: Box<Vec<(String, String)>> = Box::new(splits("hi"));
-        let inserted = inserts("hi".to_string(), &*boxed_splits);
+        let inserted = inserts(&*boxed_splits);
         assert_eq!(inserted.len(), 78);
     }
 
     fn inserts_expect(s: &str, e: Vec<String>) {
         let boxed_splits: Box<Vec<(String, String)>> = Box::new(splits(s));
-        assert_eq!(inserts(s.to_string(), &*boxed_splits), e);
+        assert_eq!(inserts(&*boxed_splits), e);
     }
 
 }
