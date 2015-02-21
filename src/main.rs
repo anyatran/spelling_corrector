@@ -303,14 +303,15 @@ mod transposes_tests {
 
 }
 
-fn replaces(word: String, splits: Vec<(String, String)>) -> Vec<String> {
+fn replaces(word: String, splits: &Vec<(String, String)>) -> Vec<String> {
     let mut replaces: Vec<String> = vec![];
-    let alphabet: Vec<&str> = vec!["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p",
-                                   "q","r","s","t","u","v","w","x","y","z"];
-    for &(a, b) in splits.iter() {
+    let alphabet: [&str; 26] = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p",
+                                "q","r","s","t","u","v","w","x","y","z"];
+    for &(ref a, ref b) in splits.iter() {
         for c in alphabet.iter() {
             if !b.is_empty() {
-                let replaced: String = (a + *c + b.as_slice().slice_from(1)).to_string();
+                let rest_of_b: &str = b.as_slice().slice_from(1);
+                let replaced: String = a.to_string() + *c + rest_of_b;
                 replaces.push(replaced)
             }
         }
@@ -343,14 +344,61 @@ mod replaces_tests {
 
     #[test]
     fn replaces_characters_in_word() {
-        let replaced = replaces("hi".to_string(), splits("hi".to_string()));
+        let boxed_splits: Box<Vec<(String, String)>> = Box::new(splits("hi".to_string()));
+        let replaced = replaces("hi".to_string(), &*boxed_splits);
         assert_eq!(replaced.len(), 52);
     }
 
     fn replaces_expect(s: &str, e: Vec<String>) {
-        assert_eq!(replaces(s.to_string(),splits(s.to_string())), e);
+        let boxed_splits: Box<Vec<(String, String)>> = Box::new(splits(s.to_string()));
+        assert_eq!(replaces(s.to_string(),&*boxed_splits), e);
     }
 }
+
+fn inserts(word: String, splits: &Vec<(String, String)>) -> Vec<String> {
+    let mut inserts: Vec<String> = vec![];
+    let alphabet: [&str; 26] = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p",
+                                "q","r","s","t","u","v","w","x","y","z"];
+    for &(ref a, ref b) in splits.iter() {
+        for c in alphabet.iter() {
+            let inserted: String = a.to_string() + *c + b.as_slice();
+            inserts.push(inserted)
+        }
+    }
+    inserts
+}
+
+#[cfg(test)]
+mod inserts_tests {
+    use super::inserts;
+    use super::splits;
+
+    #[test]
+    fn inserts_empty_string() {
+        let e: Vec<String> = vec!["a".to_string(), "b".to_string(), "c".to_string(), "d".to_string(),
+                                  "e".to_string(), "f".to_string(), "g".to_string(), "h".to_string(),
+                                  "i".to_string(), "j".to_string(), "k".to_string(), "l".to_string(),
+                                  "m".to_string(), "n".to_string(), "o".to_string(), "p".to_string(),
+                                  "q".to_string(), "r".to_string(), "s".to_string(), "t".to_string(),
+                                  "u".to_string(), "v".to_string(), "w".to_string(), "x".to_string(),
+                                  "y".to_string(), "z".to_string()];
+        inserts_expect("", e);
+
+    }
+
+    #[test]
+    fn inserts_chars_in_word() {
+        let boxed_splits: Box<Vec<(String, String)>> = Box::new(splits("hi".to_string()));
+        let inserted = inserts("hi".to_string(), &*boxed_splits);
+        assert_eq!(inserted.len(), 78);
+    }
+
+    fn inserts_expect(s: &str, e: Vec<String>) {
+        let boxed_splits: Box<Vec<(String, String)>> = Box::new(splits(s.to_string()));
+        assert_eq!(inserts(s.to_string(), &*boxed_splits), e);
+    }
+
+}*/
 
 
 
