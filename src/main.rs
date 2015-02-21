@@ -254,7 +254,7 @@ mod deletes_tests {
     }
 
     fn deletes_expect(s: &str, e: Vec<String>) {
-        let boxed_splits = Box::new(splits(s.to_string()));
+        let boxed_splits = Box::new(splits(s));
         assert_eq!(deletes(s.to_string(),&*boxed_splits), e);
     }
 }
@@ -297,7 +297,7 @@ mod transposes_tests {
     }
 
     fn transposes_expect(s: &str, e: Vec<String>) {
-        let boxed_splits: Box<Vec<(String, String)>> = Box::new(splits(s.to_string()));
+        let boxed_splits: Box<Vec<(String, String)>> = Box::new(splits(s));
         assert_eq!(transposes(s.to_string(),&*boxed_splits), e);
     }
 
@@ -344,13 +344,13 @@ mod replaces_tests {
 
     #[test]
     fn replaces_characters_in_word() {
-        let boxed_splits: Box<Vec<(String, String)>> = Box::new(splits("hi".to_string()));
+        let boxed_splits: Box<Vec<(String, String)>> = Box::new(splits("hi"));
         let replaced = replaces("hi".to_string(), &*boxed_splits);
         assert_eq!(replaced.len(), 52);
     }
 
     fn replaces_expect(s: &str, e: Vec<String>) {
-        let boxed_splits: Box<Vec<(String, String)>> = Box::new(splits(s.to_string()));
+        let boxed_splits: Box<Vec<(String, String)>> = Box::new(splits(s));
         assert_eq!(replaces(s.to_string(),&*boxed_splits), e);
     }
 }
@@ -388,17 +388,17 @@ mod inserts_tests {
 
     #[test]
     fn inserts_chars_in_word() {
-        let boxed_splits: Box<Vec<(String, String)>> = Box::new(splits("hi".to_string()));
+        let boxed_splits: Box<Vec<(String, String)>> = Box::new(splits("hi"));
         let inserted = inserts("hi".to_string(), &*boxed_splits);
         assert_eq!(inserted.len(), 78);
     }
 
     fn inserts_expect(s: &str, e: Vec<String>) {
-        let boxed_splits: Box<Vec<(String, String)>> = Box::new(splits(s.to_string()));
+        let boxed_splits: Box<Vec<(String, String)>> = Box::new(splits(s));
         assert_eq!(inserts(s.to_string(), &*boxed_splits), e);
     }
 
-}*/
+}
 
 
 
