@@ -115,7 +115,6 @@ fn train(corpus: Vec<String>) -> HashMap<String, usize> {
 #[cfg(test)]
 mod train_tests {
     use super::train;
-    use std::io;
     use std::collections::HashMap;
 
     #[test]
@@ -186,11 +185,10 @@ fn splits(word: String) -> Vec<(String, String)> {
     }
     splits
 }
+
 #[cfg(test)]
 mod splits_tests {
-
     use super::splits;
-    use std::io;
 
     #[test]
     fn splits_empty_string() {
@@ -236,7 +234,6 @@ fn deletes(word: String, splits: &Vec<(String, String)>) -> Vec<String> {
 mod deletes_tests {
     use super::deletes;
     use super::splits;
-    use std::io;
 
     #[test]
     fn deletes_empty_string() {
@@ -280,7 +277,6 @@ fn transposes(word: String, splits: &Vec<(String, String)>) -> Vec<String> {
 mod transposes_tests {
     use super::transposes;
     use super::splits;
-    use std::io;
 
     #[test]
     fn transposes_empty_string() {
