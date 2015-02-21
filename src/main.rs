@@ -262,13 +262,14 @@ mod deletes_tests {
     }
 }
 
-fn transposes(word: String, splits: Vec<(String, String)>) -> Vec<String> {
+fn transposes(word: String, splits: &Vec<(String, String)>) -> Vec<String> {
     let mut transposes: Vec<String> = vec![];
-    for (a, b) in splits.into_iter() {
+    for &(ref a, ref b) in splits.iter() {
         if b.len() > 1 {
-            let transposed: String = (a + b.as_slice().slice(1,2)
-                                        + b.as_slice().slice(0,1)
-                                        + b.as_slice().slice_from(2)).to_string();
+            let b_sub_1: &str = b.as_slice().slice(1,2);
+            let b_sub_0: &str = b.as_slice().slice(0,1);
+            let rest_of_b: &str = b.as_slice().slice_from(2);
+            let transposed: String = a.to_string() + b_sub_1 + b_sub_0 + rest_of_b;
             transposes.push(transposed)
         }
     }
@@ -300,7 +301,8 @@ mod transposes_tests {
     }
 
     fn transposes_expect(s: &str, e: Vec<String>) {
-        assert_eq!(transposes(s.to_string(),splits(s.to_string())), e);
+        let boxed_splits: Box<Vec<(String, String)>> = Box::new(splits(s.to_string()));
+        assert_eq!(transposes(s.to_string(),&*boxed_splits), e);
     }
 
 }
