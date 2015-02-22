@@ -1,3 +1,6 @@
+//! find possible corrections for misspelled words using statistical language processing, based on
+//! the spelling corrector outlined by Norvig (see: http://norvig.com/spell-correct.html)
+
 #![feature(plugin)]
 #![allow(unstable)]
 #[plugin] #[no_link]
@@ -10,7 +13,7 @@ use std::collections::HashMap;
 use std::collections::HashSet;
 
 #[cfg(not(test))]
-/// * TODO: Separate library functionality into separate crate from executable
+// TODO: Separate library functionality into separate crate from executable
 fn main() {
 
     let training_file = match os::args().tail().first() {
@@ -35,7 +38,7 @@ fn main() {
             if word == improved.as_slice() {
                 println!("{}", word);
             } else {
-                println!("{} {}", word, improved);
+                println!("{}, {}", word, improved);
             }
         }
     }
@@ -44,13 +47,11 @@ fn main() {
 
 /// Given a `String`, extracts the words from within into a Vector of Strings
 fn words(text: String) -> Vec<String> {
-    //let re: Box<regex::Regex> = Box::new(regex!(r"[a-z]+"));
     let re: Box<regex::Regex> = Box::new(regex!(r"[a-z]+"));
     let lowercase_text: Box<String> = Box::new(text.as_slice()
                                                    .chars()
                                                    .map(|c| c.to_lowercase())
                                                    .collect::<String>());
-    //let word_slices: regex::FindMatches = re.find_iter(lowercase_text.as_slice());
     let mut words: Vec<String> = vec![];
     let lowercase_text_slice: &str = lowercase_text.as_slice();
     for (start, end) in re.find_iter(lowercase_text.as_slice()) {
@@ -180,12 +181,12 @@ mod edits1_tests {
     }
 }
 
-/// computes the 2nd edit distance for a given word, only keeping those candidates that are
-/// actually known to be in the given training dictionary. Returns `None` if the given set is empty,
-/// otherwise returns `Some(HashSet<String>)`
-fn known_edits2(word: &str, nwords: &HashMap<String, usize>) -> Option<HashSet<String>> {
+/// computes the 2nd edit distance from the given set of first edit distances, only keeping those
+/// candidates that are actually known to be in the given training dictionary. Returns `None` if
+/// the given set is empty, otherwise returns `Some(HashSet<String>)`
+fn known_edits2(first_edits: &HashSet<String>, nwords: &HashMap<String, usize>) -> Option<HashSet<String>> {
     let mut known_edits2: HashSet<String> = HashSet::new();
-    for e1 in edits1(word).iter() {
+    for e1 in first_edits.iter() {
         let edits2: HashSet<String> = edits1(e1.as_slice());
         for e2 in edits2.iter() {
             if nwords.contains_key(e2) {
@@ -199,18 +200,21 @@ fn known_edits2(word: &str, nwords: &HashMap<String, usize>) -> Option<HashSet<S
 #[cfg(test)]
 mod known_edits2_tests {
     use super::known_edits2;
+    use super::edits1;
     use std::collections::HashSet;
     use std::collections::HashMap;
     
     #[test]
     fn depends_on_nwords() {
+        let first_edits: Box<HashSet<String>> = Box::new(HashSet::new());
         let nwords: HashMap<String, usize> = HashMap::new();
         let boxed_nwords: Box<HashMap<String, usize>> = Box::new(nwords);
-        assert!(known_edits2("", &*boxed_nwords).is_none());
+        assert!(known_edits2(&*first_edits, &*boxed_nwords).is_none());
     }
 
     #[test]
     fn computes_two_level_edits() {
+        let first_edits: Box<HashSet<String>> = Box::new(edits1(""));
         let mut nwords: HashMap<String, usize> = HashMap::new();
         let mut e: HashSet<String> = HashSet::new();
         e.insert("a".to_string()); e.insert("xx".to_string()); e.insert("mr".to_string());
@@ -221,7 +225,7 @@ mod known_edits2_tests {
 
         let boxed_nwords: Box<HashMap<String, usize>> = Box::new(nwords);
 
-        assert_eq!(known_edits2("", &*boxed_nwords).unwrap(), e);
+        assert_eq!(known_edits2(&*first_edits, &*boxed_nwords).unwrap(), e);
     }
 }
 
@@ -294,7 +298,7 @@ fn correct(word: &str, nwords: &HashMap<String, usize>) -> String {
         return best_guess(&candidates, nwords)
     }
 
-    if let Some(candidates) = known_edits2(word, nwords) {
+    if let Some(candidates) = known_edits2(&*boxed_first_edits, nwords) {
         return best_guess(&candidates, nwords)
     }
 
